@@ -1,0 +1,127 @@
+// TrainBox Android UI
+// Основной экран на Android с использованием Jetpack Compose (Kotlin)
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.trainbox.ui.theme.TrainBoxTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            TrainBoxTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    TrainBoxApp()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TrainBoxApp() {
+    var screen by remember { mutableStateOf("login") }
+
+    when (screen) {
+        "login" -> LoginScreen { screen = "home" }
+        "home" -> HomeScreen { screen = "booking" }
+        "booking" -> BookingScreen { screen = "profile" }
+        "profile" -> ProfileScreen { screen = "login" }
+    }
+}
+
+@Composable
+fun LoginScreen(onLoginSuccess: () -> Unit) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("TrainBox", fontSize = 28.sp)
+        Spacer(modifier = Modifier.height(24.dp))
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onLoginSuccess) { Text("Sign In") }
+    }
+}
+
+@Composable
+fun HomeScreen(onBookClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Hi, Anna!", fontSize = 24.sp)
+        Text("Next Session: April 25, 8:00 AM")
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(onClick = onBookClick) { Text("Book") }
+            Button(onClick = {}) { Text("Online Coach") }
+            Button(onClick = {}) { Text("Buy") }
+        }
+    }
+}
+
+@Composable
+fun BookingScreen(onProfileClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Book Session", fontSize = 24.sp)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("Select time slot")
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = onProfileClick) { Text("Book 8:00 AM") }
+    }
+}
+
+@Composable
+fun ProfileScreen(onLogoutClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Profile: Anna", fontSize = 24.sp)
+        Text("Hours Left: 3")
+        Text("Plan: 10 Sessions")
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onLogoutClick) { Text("Log Out") }
+    }
+}
